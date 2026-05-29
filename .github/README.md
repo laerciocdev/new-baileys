@@ -1,19 +1,32 @@
-# srlczinn/new-baileys
+# new-baileys
 
-Fork do Baileys baseado na [WhiskeySockets/Baileys](https://github.com/WhiskeySockets/Baileys), com ajustes de compatibilidade para fluxos que pararam de funcionar em versões recentes.
+Fork comunitário da [WhiskeySockets/Baileys](https://github.com/WhiskeySockets/Baileys), atualizado com base na versão 7.0.0-rc.9 da Baileys e com as alterações do fork `srlczinn/new-baileys` aplicadas.
+
+> Este pacote não é o projeto oficial da WhiskeySockets. Ele é um fork independente criado para manter compatibilidade com alguns fluxos usados em bots WhatsApp.
+
+## Base desta versão
+
+- Base upstream: `WhiskeySockets/Baileys`
+- Versão base: `7.0.0-rc.9`
+- Versão do fork: `7.0.0-rc.9-patch.1`
+- Repositório do fork: `https://github.com/srlczinn/new-baileys`
 
 ## O que esta versão traz
 
-- compatibilidade extra para envio de botões e mensagens interativas
-- suporte legado para campos como `buttons`, `templateButtons`, `sections`, `buttonText` e `interactiveButtons`
-- helpers expostos no socket para conversão entre PN/JID e LID:
-  - `sock.getLIDForPN(pn)`
-  - `sock.getLIDsForPNs(pns)`
-  - `sock.getPNForLID(lid)`
+Esta versão mantém a base 7.0.0-rc.9 da Baileys e aplica as modificações:
+
+- compatibilidade extra para envio de botões e mensagens interativas;
+- suporte legado para campos como `buttons`, `templateButtons`, `sections`, `buttonText` e `interactiveButtons`;
+- suporte a `nativeFlowMessage` para botões interativos, incluindo `quick_reply`, `cta_copy` e `cta_url`;
+- helpers públicos no socket para conversão entre PN/JID e LID:
+  - `sock.getLIDForPN(pn)`;
+  - `sock.getLIDsForPNs(pns)`;
+  - `sock.getPNForLID(lid)`;
 - `onWhatsApp()` ajustado para consultar PN/JID e LID no mesmo fluxo e retornar:
-  - `jid`
-  - `lid`
-  - `exists`
+  - `jid`;
+  - `lid`;
+  - `exists`;
+- ajuste no `relayMessage` para adicionar o node `biz` necessário em mensagens interativas, botões e listas.
 
 ## Instalação pelo GitHub
 
@@ -27,7 +40,15 @@ Também pode usar a URL completa:
 npm i https://github.com/srlczinn/new-baileys.git
 ```
 
+## Instalação pela npm
+
+```bash
+npm i @srlczinn/new-baileys
+```
+
 ## Import
+
+Com o nome atual do pacote:
 
 ```ts
 import makeWASocket from '@srlczinn/new-baileys'
@@ -56,7 +77,7 @@ import makeWASocket, {
 import pino from 'pino'
 
 const logger = pino({ level: 'silent' })
-const { state } = await useMultiFileAuthState('./auth')
+const { state, saveCreds } = await useMultiFileAuthState('./auth')
 const { version } = await fetchLatestBaileysVersion()
 
 const sock = makeWASocket({
@@ -67,19 +88,29 @@ const sock = makeWASocket({
     keys: makeCacheableSignalKeyStore(state.keys, logger)
   }
 })
+
+sock.ev.on('creds.update', saveCreds)
 ```
 
 ## Exemplo de botões legados
 
 ```ts
 const buttons = [
-  { buttonId: 'id1', buttonText: { displayText: 'Button 1' }, type: 1 },
-  { buttonId: 'id2', buttonText: { displayText: 'Button 2' }, type: 1 }
+  {
+    buttonId: 'id1',
+    buttonText: { displayText: 'Botão 1' },
+    type: 1
+  },
+  {
+    buttonId: 'id2',
+    buttonText: { displayText: 'Botão 2' },
+    type: 1
+  }
 ]
 
 await sock.sendMessage(jid, {
   text: 'Oi, essa mensagem tem botões',
-  footer: 'New Baileys',
+  footer: 'new-baileys',
   buttons,
   viewOnce: true
 })
@@ -90,7 +121,7 @@ await sock.sendMessage(jid, {
 ```ts
 await sock.sendMessage(jid, {
   text: 'Escolha uma opção',
-  footer: 'New Baileys',
+  footer: 'new-baileys',
   interactiveButtons: [
     {
       name: 'quick_reply',
@@ -98,21 +129,120 @@ await sock.sendMessage(jid, {
         display_text: 'Responder',
         id: 'responder_1'
       })
+    },
+    {
+      name: 'cta_copy',
+      buttonParamsJson: JSON.stringify({
+        display_text: 'Copiar código',
+        copy_code: 'ABC123'
+      })
+    },
+    {
+      name: 'cta_url',
+      buttonParamsJson: JSON.stringify({
+        display_text: 'Abrir GitHub',
+        url: 'https://github.com/srlczinn/new-baileys'
+      })
     }
   ],
   viewOnce: true
 })
 ```
 
+## Exemplo de botões com imagem
+
+```ts
+await sock.sendMessage(jid, {
+  image: { url: './media/menu.jpg' },
+  caption: 'Menu principal',
+  footer: 'new-baileys',
+  interactiveButtons: [
+    {
+      name: 'quick_reply',
+      buttonParamsJson: JSON.stringify({
+        display_text: 'Menu',
+        id: '.menu'
+      })
+    },
+    {
+      name: 'cta_url',
+      buttonParamsJson: JSON.stringify({
+        display_text: 'GitHub',
+        url: 'https://github.com/srlczinn/new-baileys'
+      })
+    }
+  ],
+  viewOnce: true
+})
+```
+
+## Exemplo de botões com GIF
+
+No WhatsApp, GIF costuma funcionar melhor como vídeo `.mp4` com `gifPlayback: true`:
+
+```ts
+await sock.sendMessage(jid, {
+  video: { url: './media/menu.mp4' },
+  gifPlayback: true,
+  caption: 'GIF com botões',
+  footer: 'new-baileys',
+  interactiveButtons: [
+    {
+      name: 'quick_reply',
+      buttonParamsJson: JSON.stringify({
+        display_text: 'Responder',
+        id: '.responder'
+      })
+    }
+  ],
+  viewOnce: true
+})
+```
+
+## Exemplo de lista legada
+
+```ts
+await sock.sendMessage(jid, {
+  text: 'Veja as opções disponíveis:',
+  footer: 'new-baileys',
+  title: 'Menu principal',
+  buttonText: 'Abrir lista',
+  sections: [
+    {
+      title: 'Categoria 1',
+      rows: [
+        {
+          title: 'Opção A',
+          description: 'Descrição da opção A',
+          rowId: 'opcao_a'
+        },
+        {
+          title: 'Opção B',
+          description: 'Descrição da opção B',
+          rowId: 'opcao_b'
+        }
+      ]
+    }
+  ],
+  viewOnce: true
+})
+```
+
+> Observação: listas e alguns formatos `single_select` podem continuar instáveis em WhatsApp Web, iOS ou grupos. Para maior compatibilidade, prefira `quick_reply`, `cta_copy`, `cta_url` ou menus por texto.
+
 ## Exemplo de helpers LID/JID
 
 ```ts
 const lid = await sock.getLIDForPN('5511999999999@s.whatsapp.net')
+
 const pn = await sock.getPNForLID('1234567890@lid')
+
 const mappings = await sock.getLIDsForPNs([
   '5511999999999@s.whatsapp.net',
   '5511888888888@s.whatsapp.net'
 ])
+
+console.log({ lid, pn, mappings })
 ```
 
 ## Exemplo do onWhatsApp com LID
@@ -126,36 +256,22 @@ const results = await sock.onWhatsApp(
 console.log(results)
 // [
 //   { jid: '5511999999999@s.whatsapp.net', lid: '...', exists: true },
-//   { jid: '1234567890@lid', lid: '...', exists: true }
+//   { jid: '...', lid: '1234567890@lid', exists: true }
 // ]
 ```
 
 ## Observações
 
-- esta biblioteca é um fork comunitário e não é o pacote oficial do projeto WhiskeySockets
-- o código-fonte vem da base do GitHub e as alterações ficam em `src/`, para o build gerar `lib/` corretamente
-- recomenda-se travar a versão no seu projeto para evitar perder compatibilidade em atualizações futuras
+- Este fork é comunitário e não é o pacote oficial da WhiskeySockets.
+- O código-fonte vem da base do GitHub da Baileys.
+- Recomenda-se travar a versão no seu projeto para evitar perda de compatibilidade em atualizações futuras.
+- O uso de automação no WhatsApp deve respeitar as regras da plataforma e ser feito por responsabilidade do usuário.
+
+## Créditos
+
+- Base original: [WhiskeySockets/Baileys](https://github.com/WhiskeySockets/Baileys)
+- Fork/modificações: [srlczinn/new-baileys](https://github.com/srlczinn/new-baileys)
 
 ## Licença
-Licença MIT
 
-Copyright (c) 2026 Laercio Cerqueira/srlczinn
-
-Licenciado sob a Licença MIT:
-É concedida permissão, gratuitamente, a qualquer pessoa que obtenha uma cópia
-deste software e arquivos de documentação associados (o "Software"), para lidar
-com o Software sem restrições, incluindo, sem limitação, os direitos
-de usar, copiar, modificar, fundir, publicar, distribuir, sublicenciar e/ou vender
-cópias do Software, e permitir que as pessoas a quem o Software é
-fornecido o façam, sujeitas às seguintes condições:
-
-O aviso de direitos autorais acima e este aviso de permissão devem ser incluídos em todas as
-cópias ou partes substanciais do Software.
-
-O SOFTWARE É FORNECIDO "NO ESTADO EM QUE SE ENCONTRA", SEM GARANTIA DE QUALQUER TIPO, EXPRESSA OU
-IMPLÍCITA, INCLUINDO, MAS NÃO SE LIMITANDO ÀS GARANTIAS DE COMERCIALIZAÇÃO,
-ADEQUAÇÃO A UM FIM ESPECÍFICO E NÃO VIOLAÇÃO.  EM NENHUMA HIPÓTESE OS
-AUTORES OU DETENTORES DOS DIREITOS AUTORAIS SERÃO RESPONSÁVEIS POR QUAISQUER REIVINDICAÇÕES, DANOS OU OUTRAS
-RESPONSABILIDADES, SEJA EM AÇÃO CONTRATUAL, EXTRACONTRATUAL OU DE OUTRA NATUREZA, DECORRENTES DE,
-OU RELACIONADAS COM O SOFTWARE OU O USO OU OUTRAS NEGOCIAÇÕES COM O
-SOFTWARE.
+MIT. Consulte o arquivo [LICENSE](LICENSE).
