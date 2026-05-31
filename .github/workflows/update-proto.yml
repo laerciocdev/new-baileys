@@ -1,4 +1,4 @@
-name: Update WAProto
+Name: Update WAProto
 
 on:
   schedule:
@@ -15,12 +15,12 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Install Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 24.x
 
       - name: Enable Corepack and Set Yarn Version
         run: |
@@ -29,8 +29,8 @@ jobs:
 
       - name: Install packages
         run: |
-          yarn install
-          yarn --cwd proto-extract install --immutable
+          yarn install --no-immutable
+          yarn --cwd proto-extract install --no-immutable
 
       - name: Update WAProto.proto
         id: wa_proto_info
