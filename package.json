@@ -15,10 +15,10 @@
     "multi-device",
     "lid"
   ],
-  "homepage": "https://github.com/srlczinn/new-baileys/",
+  "homepage": "https://github.com/laerciocdev/new-baileys/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/srlczinn/new-baileys.git"
+    "url": "git+https://github.com/laerciocdev/new-baileys.git"
   },
   "license": "MIT",
   "author": "Laércio Cerqueira",
