@@ -1,6 +1,6 @@
 Alteracoes aplicadas neste fork:
 - base migrada para o codigo-fonte do GitHub WhiskeySockets/Baileys
-- package.json ajustado para srlczinn/new-baileys e repositorio https://github.com/srlczinn/new-baileys
+- package.json ajustado para laerciocdev/new-baileys e repositorio https://github.com/laerciocdev/new-baileys
 - helpers publicos no socket: getLIDForPN, getLIDsForPNs e getPNForLID
 - onWhatsApp com suporte a consultas por PN/JID e LID, retornando jid, lid e exists
 - compatibilidade adicional para botoes legados, templateButtons, listas e interactiveButtons/native flow
