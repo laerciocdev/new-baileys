@@ -1,6 +1,6 @@
 # new-baileys
 
-Fork comunitário da [WhiskeySockets/Baileys](https://github.com/WhiskeySockets/Baileys), atualizado com base na versão 7.0.0-rc.9 da Baileys e com as alterações do fork `srlczinn/new-baileys` aplicadas.
+Fork comunitário da [WhiskeySockets/Baileys](https://github.com/WhiskeySockets/Baileys), atualizado com base na versão 7.0.0-rc.9 da Baileys e com as alterações do fork `laerciocdev/new-baileys` aplicadas.
 
 > Este pacote não é o projeto oficial da WhiskeySockets. Ele é um fork independente criado para manter compatibilidade com alguns fluxos usados em bots WhatsApp.
 
@@ -9,7 +9,7 @@ Fork comunitário da [WhiskeySockets/Baileys](https://github.com/WhiskeySockets/
 - Base upstream: `WhiskeySockets/Baileys`
 - Versão base: `7.0.0-rc.9`
 - Versão do fork: `7.0.0-rc.9-patch.1`
-- Repositório do fork: `https://github.com/srlczinn/new-baileys`
+- Repositório do fork: `https://github.com/laerciocdev/new-baileys`
 
 ## O que esta versão traz
 
@@ -31,19 +31,19 @@ Esta versão mantém a base 7.0.0-rc.9 da Baileys e aplica as modificações:
 ## Instalação pelo GitHub
 
 ```bash
-npm i github:srlczinn/new-baileys
+npm i github:laerciocdev/new-baileys
 ```
 
 Também pode usar a URL completa:
 
 ```bash
-npm i https://github.com/srlczinn/new-baileys.git
+npm i https://github.com/laerciocdev/new-baileys.git
 ```
 
 ## Instalação pela npm
 
 ```bash
-npm i @srlczinn/new-baileys
+npm i @laerciocdev/new-baileys
 ```
 
 ## Import
@@ -51,7 +51,7 @@ npm i @srlczinn/new-baileys
 Com o nome atual do pacote:
 
 ```ts
-import makeWASocket from '@srlczinn/new-baileys'
+import makeWASocket from '@laerciocdev/new-baileys'
 ```
 
 Ou com imports nomeados:
@@ -63,7 +63,7 @@ import makeWASocket, {
   DisconnectReason,
   Browsers,
   proto
-} from '@srlczinn/new-baileys'
+} from '@laerciocdev/new-baileys'
 ```
 
 ## Exemplo básico
@@ -73,7 +73,7 @@ import makeWASocket, {
   useMultiFileAuthState,
   makeCacheableSignalKeyStore,
   fetchLatestBaileysVersion
-} from '@srlczinn/new-baileys'
+} from '@laerciocdev/new-baileys'
 import pino from 'pino'
 
 const logger = pino({ level: 'silent' })
@@ -141,7 +141,7 @@ await sock.sendMessage(jid, {
       name: 'cta_url',
       buttonParamsJson: JSON.stringify({
         display_text: 'Abrir GitHub',
-        url: 'https://github.com/srlczinn/new-baileys'
+        url: 'https://github.com/laerciocdev/new-baileys'
       })
     }
   ],
@@ -168,7 +168,7 @@ await sock.sendMessage(jid, {
       name: 'cta_url',
       buttonParamsJson: JSON.stringify({
         display_text: 'GitHub',
-        url: 'https://github.com/srlczinn/new-baileys'
+        url: 'https://github.com/laerciocdev/new-baileys'
       })
     }
   ],
@@ -270,7 +270,7 @@ console.log(results)
 ## Créditos
 
 - Base original: [WhiskeySockets/Baileys](https://github.com/WhiskeySockets/Baileys)
-- Fork/modificações: [srlczinn/new-baileys](https://github.com/srlczinn/new-baileys)
+- Fork/modificações: [srlczinn/new-baileys](https://github.com/laerciocdev/new-baileys)
 
 ## Licença
 
